@@ -1,3 +1,4 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,4 +10,49 @@
   h2 {
     @apply text-xl;
   }
+  p:not(:last-child) {
+    @apply mb-3;
+  }
+  hr {
+    @apply my-4;
+  }
+  img {
+    @apply select-none;
+    -webkit-user-drag: none;
+  }
+}
+
+.collapse-box {
+  i {
+    transition: transform 0.3s ease-in-out;
+  }
+}
+.collapse-children {
+  @apply pl-4;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+.collapse-children.open {
+  max-height: 500px;
+}
+
+.swiper {
+  --swiper-theme-color: theme('colors.gray.100');
+  --swiper-navigation-sides-offset: 0;
+  .swiper-button-prev:after, .swiper-button-next:after {
+    padding: .25rem;
+    background-color: #AAAA;
+  }
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.4s;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
 }
