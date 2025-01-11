@@ -1,0 +1,14 @@
+{
+  "title": "my portfolio",
+  "description": "this ismy portfolio",
+  "name": "Banana",
+  "email": "123@example.com",
+  "phone": "0901-234-567",
+  "logo": "/img/logo.png",
+  "avatar": "/img/avatar.png",
+  "instagram": "https://www.instagram.com/",
+  "facebook": "https://www.facebook.com/",
+  "twitter": "https://twitter.com/",
+  "linkedin": "https://www.linkedin.com/",
+  "github": "https://github.com/"
+}

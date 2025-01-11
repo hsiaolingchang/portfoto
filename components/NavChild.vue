@@ -20,7 +20,7 @@ const props = defineProps({
       {{ nav.title }}
     </div>
     <div class="collapse-children flex flex-col mt-2" :class="{ open: expandedSections[nav.title] }">
-      <NavChild v-for="childNav in nav.children" :key="childNav.title" :nav="childNav" />
+      <NavChild v-for="childNav in nav.children" :key="childNav.path" :nav="childNav" />
     </div>
   </div>
   <div v-else-if="nav.title.length > 0">

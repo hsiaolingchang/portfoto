@@ -10,23 +10,6 @@ export default defineContentConfig({
         banner: z.string(),
         gallery: z.array(z.string())
       })
-    }),
-    common: defineCollection({
-      type: 'data',
-      source: '**/*.yml',
-      schema: z.object({
-        title: z.string(),
-        name: z.string(),
-        email: z.string(),
-        phone: z.string(),
-        logo: z.string(),
-        avatar: z.string(),
-        instagram: z.string(),
-        facebook: z.string(),
-        twitter: z.string(),
-        linkedin: z.string(),
-        github: z.string()
-      })
     })
   }
 })

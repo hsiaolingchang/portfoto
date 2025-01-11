@@ -1,9 +1,10 @@
 <script setup>
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import { Navigation, Pagination } from 'swiper/modules'
+import 'swiper/css/effect-fade';
+import { Navigation, Pagination, EffectFade } from 'swiper/modules'
 import images from '@/public/images.json'
 
 defineProps(['info'])
@@ -21,6 +22,7 @@ const useGalleryImages = async (gallery) => {
 
   return (await Promise.all(promises)).flat()
 }
+
 const { data: page } = await useAsyncData('page', () => queryCollection('content').path(route.path).first())
 const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryImages(page.value?.gallery))
 </script>
@@ -36,11 +38,11 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     <div @click="popup = false" class="absolute top-0 right-0 text-gray-500 cursor-pointer z-10">
       <i class="text-[3rem] bi bi-x"></i>
     </div>
-    <swiper :modules="[Navigation, Pagination]" :pagination="{ clickable: true }" :navigation="true"
+    <swiper v-if="popup" :modules="[Navigation, Pagination, EffectFade]" :pagination="{ clickable: true }" :navigation="true"
       :slides-per-view="1" :space-between="30" :loop="true" :initial-slide="initialSlide"
-      :autoplay="{ delay: 2500, disableOnInteraction: false }"
+      :effect="'fade'" :autoplay="{ delay: 2500, disableOnInteraction: false }"
       class="w-full h-full">
-      <swiper-slide v-for="image in galleryImages" :key="image">
+      <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white">
         <img :src="image" class="h-full max-w-full rounded mx-auto">
       </swiper-slide>
     </swiper>

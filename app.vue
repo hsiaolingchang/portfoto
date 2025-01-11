@@ -1,12 +1,5 @@
 <script setup>
-const { data: info } = await useAsyncData('info', () => {
-  return queryCollection('common').where('stem', '=', 'info').first()
-})
-const { data: contents } = await useAsyncData('contents', async () => {
-  const allContents = await queryCollection('content').all()
-  const contents = allContents.filter(content => content.path !== '/')
-  return contents
-})
+import info from '@/public/info.json'
 const { data: navContents } = await useAsyncData('navContents', () => {
   return queryCollectionNavigation('content')
 })
@@ -40,7 +33,7 @@ const { data: navContents } = await useAsyncData('navContents', () => {
           </div>
           <hr>
           <div class="flex flex-col gap-2">
-            <NavChild v-for="nav in navContents" :key="nav.title" :nav="nav" />
+            <NavChild v-for="nav in navContents" :key="nav.path" :nav="nav" />
           </div>
         </div>
       </div>
