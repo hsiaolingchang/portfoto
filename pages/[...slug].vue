@@ -4,6 +4,7 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import { Navigation, Pagination } from 'swiper/modules'
+import images from '@/public/images.json'
 
 defineProps(['info'])
 const route = useRoute()
@@ -11,22 +12,15 @@ const popup = ref(false)
 const initialSlide = ref(0)
 
 const useGalleryImages = async (gallery) => {
-  const promises = gallery.map(async (item) => {
+  const promises = gallery.map((item) => {
     if (item.endsWith('/')) {
-      const { data: files } = await useAsyncData(`files-${item}`, () =>
-        $fetch('/api/_content/files', {
-          params: { prefix: item }
-        })
-      )
-      return files.value || []
+      return images.filter(img => img.startsWith(item))
     }
     return item
   })
 
   return (await Promise.all(promises)).flat()
-  
 }
-
 const { data: page } = await useAsyncData('page', () => queryCollection('content').path(route.path).first())
 const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryImages(page.value?.gallery))
 </script>
@@ -37,8 +31,8 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     <Title v-if="page?.title">{{ info.title }} | {{ page.title }}</Title>
     <Title v-else>{{ info.title }}</Title>
   </Head>
-  <div v-if="popup"
-    class="fixed top-0 left-0 w-full h-full bg-white flex items-center justify-center p-6">
+  <div :class="popup ? 'show': ''"
+    class="popup-container">
     <div @click="popup = false" class="absolute top-0 right-0 text-gray-500 cursor-pointer z-10">
       <i class="text-[3rem] bi bi-x"></i>
     </div>

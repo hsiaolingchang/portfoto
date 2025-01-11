@@ -22,6 +22,14 @@
   }
 }
 
+.popup-container {
+  @apply fixed top-0 left-0 w-full h-full bg-white flex items-center justify-center p-6;
+  transition: opacity 0.2s ease-in-out;
+  &:not(.show) {
+    @apply opacity-0 pointer-events-none;
+  }
+}
+
 .collapse-box {
   i {
     transition: transform 0.3s ease-in-out;
