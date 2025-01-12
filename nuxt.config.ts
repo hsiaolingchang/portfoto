@@ -7,7 +7,11 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   experimental: { appManifest: false },
-  modules: ['@nuxtjs/tailwindcss', '@nuxt/content'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxt/content', '@nuxt/image'],
+  image: {
+    format: ['webp'],
+    quality: 80
+  },
   ssr: false,
   hooks: {
     'build:before': () => {
