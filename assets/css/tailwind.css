@@ -48,6 +48,7 @@
 .swiper {
   --swiper-theme-color: theme('colors.gray.100');
   --swiper-navigation-sides-offset: 0;
+  --swiper-navigation-size: 2rem;
   .swiper-button-prev:after, .swiper-button-next:after {
     padding: .25rem;
     background-color: #AAAA;

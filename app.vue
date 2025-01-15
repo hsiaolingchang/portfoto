@@ -1,7 +1,7 @@
 <script setup>
 import info from '@/public/info.json'
 const { data: navContents } = await useAsyncData('navContents', () => {
-  return queryCollectionNavigation('content', ['banner'])
+  return queryCollectionNavigation('content')
 })
 </script>
 
@@ -42,7 +42,7 @@ const { data: navContents } = await useAsyncData('navContents', () => {
         </div>
       </div>
       <div class="flex">
-        <NuxtPage :info="info" />
+        <NuxtPage :info="info" :navContents="navContents" />
       </div>
     </div>
   </div>

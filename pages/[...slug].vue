@@ -7,7 +7,7 @@ import 'swiper/css/effect-fade'
 import { Navigation, EffectFade, Thumbs } from 'swiper/modules'
 import images from '@/public/images.json'
 
-defineProps(['info'])
+defineProps(['info', 'navContents'])
 const route = useRoute()
 const popup = ref(false)
 const initialSlide = ref(0)
@@ -36,6 +36,9 @@ watch(popup, (isPopup) => {
 })
 
 const { data: page } = await useAsyncData('page', () => queryCollection('content').path(route.path).first())
+const { data: currentNav } = await useAsyncData('currentNav', () => {
+  return queryCollection('content').where('path', 'LIKE', `${route.path}%`).select('title', 'banner', 'path').all()
+})
 const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryImages(page.value?.gallery))
 </script>
 
@@ -78,7 +81,20 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     </div>
     <ContentRenderer :value="page" />
   </main>
+  <main v-else-if="currentNav.length">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 my-8">
+      <template v-for="nav in currentNav">
+        <NuxtLink :to="nav.path">
+          <div class="aspect-square relative">
+            <NuxtImg v-if="nav.banner" :src="nav.banner" class="w-full h-full object-cover rounded mb-6" />
+            <div v-else class="w-full h-full bg-gray-200 rounded mb-6"></div>
+            <span class="text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">{{ nav.title }}</span>
+          </div>
+        </NuxtLink>
+      </template>
+    </div>
+  </main>
   <main v-else>
-    <h1>404</h1>
+    <h1>Oh no! 找不到此頁面 :(</h1>
   </main>
 </template>
