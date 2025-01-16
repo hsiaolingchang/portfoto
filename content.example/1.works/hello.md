@@ -1,10 +1,10 @@
 ---
 title: 屋可又左家圓雄八巾奶早造開亮
-banner: /img/p1.jpg
+banner: /example/p1.jpg
 gallery:
-  - /img/p1.jpg
-  - /img/p2.jpg
-  - /img/p3.jpg
+  - /example/p1.jpg
+  - /example/p2.jpg
+  - /example/p3.jpg
 ---
 
 上黃南公道米物員但「愛白校西」首南來，它想員采地卜意跳乾大用交斤汗果星來半吉。連鴨急許玉星半汁校晚西回書，祖園黃弓相婆己停雄息都起鴨旦。陽耍空追甲壯高或字室害風皮抓怕出。

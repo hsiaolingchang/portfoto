@@ -22,3 +22,10 @@ logs
 .env
 .env.*
 !.env.example
+
+# Content
+content/
+public/images.json
+public/images.yml
+public/info.json
+public/info.yml

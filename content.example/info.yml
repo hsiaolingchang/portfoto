@@ -1,10 +1,10 @@
-title: my portfolio
-description: this ismy portfolio
+title: Banana's portfolio
+description: this is Banana's portfolio
 name: Banana
 email: 123@example.com
 phone: 0901-234-567
-logo: /img/logo.png
-avatar: /img/avatar.png
+logo: /example/logo.png
+avatar: /example/avatar.png
 instagram: https://www.instagram.com/
 facebook: https://www.facebook.com/
 twitter: https://twitter.com/

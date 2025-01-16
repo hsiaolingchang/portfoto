@@ -1,12 +1,5 @@
 import { defineContentConfig, defineCollection, z } from '@nuxt/content'
-import { resolve } from 'path'
-import { existsSync } from 'fs'
-
-const contentDir = () => {
-  const contentPath = resolve(__dirname, 'content')
-  const examplePath = resolve(__dirname, 'content.example')
-  return existsSync(contentPath) ? contentPath : examplePath
-}
+import { contentDir } from './nuxt.config'
 
 export default defineContentConfig({
   collections: {

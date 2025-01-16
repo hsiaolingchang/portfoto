@@ -1,7 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { readdirSync, statSync, writeFileSync, readFileSync } from 'fs'
-import { join, relative } from 'path'
+import { join, relative, resolve } from 'path'
+import { existsSync } from 'fs'
 import yaml from 'yaml'
+
+export const contentDir = () => {
+  const contentPath = resolve(__dirname, 'content')
+  const examplePath = resolve(__dirname, 'content.example')
+  return existsSync(contentPath) ? contentPath : examplePath
+}
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -34,7 +41,7 @@ export default defineNuxtConfig({
       writeFileSync(jsonPath, JSON.stringify(imageList, null, 2))
 
       // Handle info.yml to info.json conversion
-      const infoPath = join(process.cwd(), 'content/info.yml')
+      const infoPath = join(contentDir(), 'info.yml')
       const infoJsonPath = join(publicImgPath, 'info.json')
       const infoYaml = readFileSync(infoPath, 'utf8')
       const infoData = yaml.parse(infoYaml)
