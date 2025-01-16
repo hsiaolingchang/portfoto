@@ -49,7 +49,7 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     <Title v-else>{{ info.title }}</Title>
   </Head>
   <div :class="popup ? 'show' : ''" class="popup-container">
-    <div @click="popup = false" class="absolute top-0 right-0 text-gray-500 cursor-pointer z-50">
+    <div @click="popup = false" class="absolute top-0 right-0 text-gray-500 cursor-pointer z-10">
       <i class="text-[3rem] bi bi-x"></i>
     </div>
     <swiper v-if="popup" :modules="[Navigation, EffectFade, Thumbs]" :thumbs="{ swiper: thumbsSwiper }"
@@ -64,7 +64,7 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     <swiper v-if="popup" @swiper="setThumbsSwiper" :modules="[Navigation, Thumbs]" :slides-per-view="'auto'"
       :space-between="10" :watch-slides-progress="true" class="gallery-thumbs">
       <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white" style="width: auto;">
-        <div class="flex justify-center items-center h-full aspect-square">
+        <div class="flex justify-center items-center h-full aspect-square cursor-pointer">
           <NuxtImg :src="image" class="h-full w-full object-cover m-auto" />
         </div>
       </swiper-slide>
@@ -74,7 +74,7 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     <h1 v-if="page.showTitle" class="mb-6">{{ page.title }}</h1>
     <NuxtImg v-if="page.banner" :src="page.banner" class="w-full rounded mb-6" />
     <div v-if="galleryImages?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-4 my-8">
-      <div v-for="(image, index) in galleryImages" :key="image" class="aspect-square">
+      <div v-for="(image, index) in galleryImages" :key="image" class="aspect-square hover-opacity">
         <NuxtImg @click="() => { initialSlide = index; popup = true }" :src="image"
           class="rounded w-full h-full object-cover cursor-pointer" />
       </div>
@@ -85,7 +85,7 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 my-8">
       <template v-for="nav in currentNav">
         <NuxtLink :to="nav.path">
-          <div class="aspect-square relative">
+          <div class="aspect-square relative hover-opacity">
             <NuxtImg v-if="nav.banner" :src="nav.banner" class="w-full h-full object-cover rounded mb-6" />
             <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6" />
             <div v-else class="w-full h-full bg-gray-200 rounded mb-6"></div>

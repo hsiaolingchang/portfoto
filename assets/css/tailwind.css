@@ -22,17 +22,18 @@
   img {
     @apply select-none;
     -webkit-user-drag: none;
-    &.cursor-pointer {
-      &:hover {
-        transition: filter 0.2s ease-in-out;
-        filter: brightness(1.1);
-      }
-    }
+  }
+}
+
+.hover-opacity {
+  transition: opacity 0.2s ease-in-out;
+  &:hover {
+    @apply opacity-80;
   }
 }
 
 .popup-container {
-  @apply fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center p-2 md:p-6;
+  @apply fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center p-2 md:p-6 z-50;
   transition: opacity 0.2s ease-in-out;
   &:not(.show) {
     @apply opacity-0 z-[-10];
