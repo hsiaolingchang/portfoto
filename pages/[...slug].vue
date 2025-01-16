@@ -37,7 +37,7 @@ watch(popup, (isPopup) => {
 
 const { data: page } = await useAsyncData('page', () => queryCollection('content').path(route.path).first())
 const { data: currentNav } = await useAsyncData('currentNav', () => {
-  return queryCollection('content').where('path', 'LIKE', `${route.path}%`).select('title', 'banner', 'path').all()
+  return queryCollection('content').where('path', 'LIKE', `${route.path}%`).select('title', 'banner', 'path', 'gallery').all()
 })
 const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryImages(page.value?.gallery))
 </script>
@@ -71,7 +71,7 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     </swiper>
   </div>
   <main v-if="page">
-    <h1 v-if="page.title" class="mb-6">{{ page.title }}</h1>
+    <h1 v-if="page.showTitle" class="mb-6">{{ page.title }}</h1>
     <NuxtImg v-if="page.banner" :src="page.banner" class="w-full rounded mb-6" />
     <div v-if="galleryImages?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-4 my-8">
       <div v-for="(image, index) in galleryImages" :key="image" class="aspect-square">
@@ -87,6 +87,7 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
         <NuxtLink :to="nav.path">
           <div class="aspect-square relative">
             <NuxtImg v-if="nav.banner" :src="nav.banner" class="w-full h-full object-cover rounded mb-6" />
+            <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6" />
             <div v-else class="w-full h-full bg-gray-200 rounded mb-6"></div>
             <span class="text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">{{ nav.title }}</span>
           </div>

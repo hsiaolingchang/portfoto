@@ -36,7 +36,7 @@ const { data: navContents } = await useAsyncData('navContents', () => {
             </div>
           </div>
           <hr>
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-1">
             <NavChild v-for="nav in navContents" :key="nav.path" :nav="nav" />
           </div>
         </div>
