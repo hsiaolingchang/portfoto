@@ -19,7 +19,7 @@ export default defineContentConfig({
       schema: z.object({
         title: z.string(),
         showTitle: z.boolean().default(true),
-        banner: z.string(),
+        banner: z.array(z.string()),
         gallery: z.array(z.string())
       })
     })

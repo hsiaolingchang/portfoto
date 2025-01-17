@@ -4,9 +4,6 @@
 @tailwind utilities;
 
 @layer base {
-  main {
-    @apply w-full;
-  }
   h1 {
     @apply text-2xl;
   }
@@ -33,7 +30,7 @@
 }
 
 .popup-container {
-  @apply fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center p-2 md:p-6 z-50;
+  @apply fixed top-0 left-0 w-full h-full bg-white p-2 md:p-6 z-50;
   transition: opacity 0.2s ease-in-out;
   &:not(.show) {
     @apply opacity-0 z-[-10];
@@ -47,29 +44,25 @@
 }
 
 .collapse-children.open {
+  @apply my-1;
   max-height: 100vh;
 }
 
-.swiper {
+swiper-container {
   --swiper-theme-color: theme('colors.gray.100');
   --swiper-navigation-sides-offset: 0;
   --swiper-navigation-size: 2rem;
-  .swiper-button-prev:after, .swiper-button-next:after {
+  &::part(button-prev), &::part(button-next) {
     padding: .25rem;
     background-color: #AAAA;
   }
   @media (max-width: theme('screens.md')) {
     --swiper-navigation-top-offset: 90%;
-    --swiper-navigation-sides-offset: 40%;
+    --swiper-navigation-sides-offset: 30%;
   }
 }
 
-.gallery-swiper {
-  @apply w-full h-full mb-4;
-}
-
 .gallery-thumbs {
-  @apply w-full h-20;
   .swiper-slide img {
     @apply rounded-md;
     transition: border 0.1s ease-in-out;
@@ -77,4 +70,18 @@
   .swiper-slide-thumb-active img {
     @apply border-4 border-gray-300;
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in-on-open {
+  animation: fadeIn 0.2s ease-in-out;
 }

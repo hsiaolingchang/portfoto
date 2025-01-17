@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { readdirSync, statSync, writeFileSync, readFileSync } from 'fs'
+import { readdirSync, statSync, writeFileSync, readFileSync, existsSync } from 'fs'
 import { join, relative, resolve } from 'path'
-import { existsSync } from 'fs'
 import yaml from 'yaml'
 
 export const contentDir = () => {
@@ -11,6 +10,11 @@ export const contentDir = () => {
 }
 
 export default defineNuxtConfig({
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith('swiper-')
+    }
+  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   experimental: { appManifest: false },

@@ -1,12 +1,8 @@
 <script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/thumbs'
-import 'swiper/css/effect-fade'
-import { Navigation, EffectFade, Thumbs } from 'swiper/modules'
+import { register } from 'swiper/element/bundle'
 import images from '@/public/images.json'
 
+register()
 defineProps(['info', 'navContents'])
 const route = useRoute()
 const popup = ref(false)
@@ -15,7 +11,7 @@ const thumbsSwiper = ref(null)
 const setThumbsSwiper = (swiper) => {
   thumbsSwiper.value = swiper
 }
-const useGalleryImages = async (gallery) => {
+const parseImageList = async (gallery) => {
   const promises = gallery.map((item) => {
     if (item.endsWith('/')) {
       return images.filter(img => img.startsWith(item))
@@ -36,10 +32,11 @@ watch(popup, (isPopup) => {
 })
 
 const { data: page } = await useAsyncData('page', () => queryCollection('content').path(route.path).first())
+const { data: galleryImages } = useAsyncData('galleryImages', () => parseImageList(page.value?.gallery))
+const { data: bannerImages } = useAsyncData('bannerImages', () => parseImageList(page.value?.banner))
 const { data: currentNav } = await useAsyncData('currentNav', () => {
   return queryCollection('content').where('path', 'LIKE', `${route.path}%`).select('title', 'banner', 'path', 'gallery').all()
 })
-const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryImages(page.value?.gallery))
 </script>
 
 <template>
@@ -52,41 +49,51 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
     <div @click="popup = false" class="absolute top-0 right-0 text-gray-500 cursor-pointer z-10">
       <i class="text-[3rem] bi bi-x"></i>
     </div>
-    <swiper v-if="popup" :modules="[Navigation, EffectFade, Thumbs]" :thumbs="{ swiper: thumbsSwiper }"
-      :navigation="true" :slides-per-view="1" :space-between="30" :loop="true" :initial-slide="initialSlide"
-      :effect="'fade'" class="gallery-swiper">
-      <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white">
-        <div class="flex justify-center items-center h-full w-full">
-          <NuxtImg :src="image" class="h-full w-full object-contain m-auto" />
-        </div>
-      </swiper-slide>
-    </swiper>
-    <swiper v-if="popup" @swiper="setThumbsSwiper" :modules="[Navigation, Thumbs]" :slides-per-view="'auto'"
-      :space-between="10" :watch-slides-progress="true" class="gallery-thumbs">
-      <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white" style="width: auto;">
-        <div class="flex justify-center items-center h-full aspect-square cursor-pointer">
-          <NuxtImg :src="image" class="h-full w-full object-cover m-auto" />
-        </div>
-      </swiper-slide>
-    </swiper>
+    <div class="min-w-0 min-h-0 h-full w-full flex flex-col">
+      <swiper-container v-if="popup" thumbs-swiper=".gallery-thumbs" navigation="true" slides-per-view="1"
+        space-between="30" loop="true" :initial-slide="initialSlide" effect="fade" class="gallery-swiper w-full h-[90%] mb-4">
+        <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white">
+          <div class="flex justify-center items-center h-full w-full">
+            <NuxtImg :src="image" class="h-full w-full object-contain m-auto" />
+          </div>
+        </swiper-slide>
+      </swiper-container>
+      <swiper-container v-if="popup" slides-per-view="auto" space-between="10" watch-slides-progress="true"
+        class="gallery-thumbs w-full h-[10%]">
+        <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white" style="width: auto;">
+          <div class="flex justify-center items-center h-full aspect-square cursor-pointer">
+            <NuxtImg :src="image" class="h-full w-full object-cover m-auto" />
+          </div>
+        </swiper-slide>
+      </swiper-container>
+    </div>
   </div>
-  <main v-if="page">
-    <h1 v-if="page.showTitle" class="mb-6">{{ page.title }}</h1>
-    <NuxtImg v-if="page.banner" :src="page.banner" class="w-full rounded mb-6" />
-    <div v-if="galleryImages?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-4 my-8">
+  <div v-if="page" class="min-w-0 min-h-0 fade-in-on-open">
+    <h1 v-if="page.showTitle && page.title" class="mb-6">{{ page.title }}</h1>
+    <div v-if="bannerImages?.length" class="min-w-0 min-h-0 mb-8">
+      <swiper-container v-if="bannerImages?.length" loop="true" effect="fade" autoplay-delay="2500"
+        autoplay-disable-on-interaction="false">
+        <swiper-slide v-for="image in bannerImages" :key="page.path + image" class="bg-white">
+          <div class="aspect-[3/2] rounded overflow-hidden">
+            <NuxtImg :src="image" class="w-full h-full object-cover m-auto" />
+          </div>
+        </swiper-slide>
+      </swiper-container>
+    </div>
+    <div v-if="galleryImages?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
       <div v-for="(image, index) in galleryImages" :key="image" class="aspect-square hover-opacity">
         <NuxtImg @click="() => { initialSlide = index; popup = true }" :src="image"
           class="rounded w-full h-full object-cover cursor-pointer" />
       </div>
     </div>
     <ContentRenderer :value="page" />
-  </main>
-  <main v-else-if="currentNav.length">
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 my-8">
+  </div>
+  <div v-else-if="currentNav.length" class="fade-in-on-open">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
       <template v-for="nav in currentNav">
         <NuxtLink :to="nav.path">
           <div class="aspect-square relative hover-opacity">
-            <NuxtImg v-if="nav.banner" :src="nav.banner" class="w-full h-full object-cover rounded mb-6" />
+            <NuxtImg v-if="nav.banner" :src="nav.banner[0]" class="w-full h-full object-cover rounded mb-6" />
             <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6" />
             <div v-else class="w-full h-full bg-gray-200 rounded mb-6"></div>
             <span class="text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">{{ nav.title }}</span>
@@ -94,8 +101,8 @@ const { data: galleryImages } = useAsyncData('galleryImages', () => useGalleryIm
         </NuxtLink>
       </template>
     </div>
-  </main>
-  <main v-else>
+  </div>
+  <div v-else>
     <h1>Oh no! 找不到此頁面 :(</h1>
-  </main>
+  </div>
 </template>

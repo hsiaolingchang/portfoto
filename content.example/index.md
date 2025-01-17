@@ -1,5 +1,7 @@
 ---
-banner: /example/p1.jpg
+banner:
+  - /example/p1.jpg
+  - /example/p2.jpg
 ---
 
 京訴冒助刃雪几申立美合上才紅雄七，己次巴民兄子央燈陽。戊棵科功事子這蝸立言園高羊長嗎姐活；起錯車六雞英雞親。
