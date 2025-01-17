@@ -25,7 +25,6 @@ logs
 
 # Content
 content/
-public/images.json
-public/images.yml
-public/info.json
-public/info.yml
+public/*
+
+!public/examples/*
