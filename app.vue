@@ -9,6 +9,11 @@ const openMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 const { data: windowSize } = useAsyncData('windowSize', () => useWindowSize())
+const route = useRoute()
+
+watch(() => route.path, () => {
+  isMenuOpen.value = false
+})
 </script>
 
 <template>
@@ -17,18 +22,22 @@ const { data: windowSize } = useAsyncData('windowSize', () => useWindowSize())
     <Title>{{ info.title }}</Title>
     <Meta name="description" :content="info.description" />
   </Head>
-  <div class="container mx-auto max-w-screen-lg">
-    <div v-if="windowSize.width < 768" class="sticky top-0 left-0 w-screen z-50">
-      <div @click="openMenu()" class="me-4 text-[2rem] text-right bg-white">
+  <div class="container mx-auto max-w-full-lg">
+    <div v-if="windowSize.width < 768" class="sticky top-0 left-0 w-full z-50 flex p-4 bg-white">
+      <a href="/">
+        <NuxtImg :src="info.avatar" class="rounded w-40" />
+      </a>
+      <div @click="openMenu()" class="ms-auto text-[2rem] bg-white">
         <i class="bi bi-list"></i>
       </div>
-      <div v-if="isMenuOpen" class="fixed top-10 left-0 w-screen bg-white p-8 shadow-md fade-in-on-open">
-        <div class="flex flex-col items-center">
-          <a href="/">
-            <NuxtImg :src="info.avatar" class="rounded w-32 mb-4" />
-          </a>
-          <h1 class="mb-1">{{ info.name }}</h1>
-          <div class="mb-1"><a :href="`mailto:${info.email}`">{{ info.email }}</a></div>
+      <div v-if="isMenuOpen" class="fixed top-0 left-0 w-full bg-white p-4 shadow-md fade-in-on-open">
+        <div @click="isMenuOpen = false" class="ms-auto text-[2rem] bg-white text-right">
+          <i class="bi bi-x"></i>
+        </div>
+        <div class="flex flex-col items-center text-center">
+          <h1 class="mb-2">{{ info.name }}</h1>
+          <div class="mb-2">{{ info.slogan }}</div>
+          <div class="mb-2"><a :href="`mailto:${info.email}`">{{ info.email }}</a></div>
           <div class="mb-3"><a :href="`tel:${info.phone}`">{{ info.phone }}</a></div>
           <div class="flex flex-wrap gap-2 text-2xl">
             <a v-if="info.instagram" :href="info.instagram" target="_blank" class="text-gray-600 font-bold">
@@ -53,10 +62,11 @@ const { data: windowSize } = useAsyncData('windowSize', () => useWindowSize())
       <div v-if="windowSize.width >= 768" class="sticky top-10">
         <div class="flex flex-col gap-4">
           <a href="/">
-            <NuxtImg :src="info.avatar" class="rounded w-32 md:w-40" />
+            <NuxtImg :src="info.avatar" class="rounded w-48" />
           </a>
           <div>
             <h1 class="mb-1">{{ info.name }}</h1>
+            <div class="mb-1">{{ info.slogan }}</div>
             <div class="mb-1"><a :href="`mailto:${info.email}`">{{ info.email }}</a></div>
             <div class="mb-3"><a :href="`tel:${info.phone}`">{{ info.phone }}</a></div>
             <div class="flex flex-wrap gap-2 text-2xl">

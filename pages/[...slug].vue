@@ -96,7 +96,9 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
             <NuxtImg v-if="nav.banner" :src="nav.banner[0]" class="w-full h-full object-cover rounded mb-6" />
             <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6" />
             <div v-else class="w-full h-full bg-gray-200 rounded mb-6"></div>
-            <span class="text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">{{ nav.title }}</span>
+            <div class="opacity-0 hover-opacity bg-white flex justify-center items-center absolute top-0 left-0 w-full h-full">
+              <span class="text-center p-4 font-bold">{{ nav.title }}</span>
+            </div>
           </div>
         </NuxtLink>
       </template>

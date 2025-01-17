@@ -4,6 +4,10 @@ const props = defineProps({
   nav: {
     type: Object,
     required: true
+  },
+  isSubNav: {
+    type: Boolean,
+    default: false
   }
 })
 const checkExpanded = (path) => {
@@ -15,7 +19,7 @@ const checkExpanded = (path) => {
 </script>
 
 <template>
-  <div v-if="nav.title.length > 0" class="collapse-box">
+  <div v-if="(nav.title.length > 0) && (!isSubNav || nav.page === false)" class="collapse-box">
       <NuxtLink :to="nav.path" :class="[
         route.path === nav.path ? 'text-gray-700 font-bold' : 'text-gray-500 hover:text-gray-700'
       ]">
@@ -24,7 +28,7 @@ const checkExpanded = (path) => {
         {{ nav.title }}
       </NuxtLink>
     <div v-if="nav.page === false" class="collapse-children flex flex-col gap-1" :class="{ open: checkExpanded(nav.path) }">
-      <NavChild v-for="childNav in nav.children" :key="childNav.path" :nav="childNav" />
+      <NavChild v-for="childNav in nav.children" :key="childNav.path" :nav="childNav" :isSubNav="true" />
     </div>
   </div>
 </template>

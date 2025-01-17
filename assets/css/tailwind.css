@@ -44,7 +44,6 @@
 }
 
 .collapse-children.open {
-  @apply my-1;
   max-height: 100vh;
 }
 
