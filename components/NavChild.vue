@@ -21,7 +21,7 @@ const checkExpanded = (path) => {
 <template>
   <div v-if="(nav.title.length > 0) && (!isSubNav || nav.page === false)" class="collapse-box">
       <NuxtLink :to="nav.path" :class="[
-        route.path === nav.path ? 'text-gray-700 font-bold' : 'text-gray-500 hover:text-gray-700'
+        route.path.startsWith(nav.path) ? 'text-gray-700 font-bold' : 'text-gray-500 hover:text-gray-700'
       ]">
         <i v-if="nav.page === false" class="bi bi-caret-right mr-2" />
         <i v-else class="bi bi-caret-right-fill mr-2" />

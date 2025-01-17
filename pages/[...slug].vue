@@ -46,12 +46,13 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
     <Title v-else>{{ info.title }}</Title>
   </Head>
   <div :class="popup ? 'show' : ''" class="popup-container">
-    <div @click="popup = false" class="absolute top-0 right-0 text-gray-500 cursor-pointer z-10">
-      <i class="text-[3rem] bi bi-x"></i>
+    <div @click="popup = false" class="absolute top-2 right-2 cursor-pointer z-10">
+      <i class="text-gray-800 text-[2.5rem] bi bi-x"></i>
     </div>
-    <div class="min-w-0 min-h-0 h-full w-full flex flex-col">
+    <div class="min-w-0 min-h-0 h-full w-full flex flex-col bg-white p-2">
       <swiper-container v-if="popup" thumbs-swiper=".gallery-thumbs" navigation="true" slides-per-view="1"
-        space-between="30" loop="true" :initial-slide="initialSlide" effect="fade" class="gallery-swiper w-full h-[90%] mb-4">
+        space-between="30" loop="true" :initial-slide="initialSlide" effect="fade"
+        class="gallery-swiper w-full h-[80%] my-auto">
         <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white">
           <div class="flex justify-center items-center h-full w-full">
             <NuxtImg :src="image" class="h-full w-full object-contain m-auto" />
@@ -62,27 +63,27 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
         class="gallery-thumbs w-full h-[10%]">
         <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white" style="width: auto;">
           <div class="flex justify-center items-center h-full aspect-square cursor-pointer">
-            <NuxtImg :src="image" class="h-full w-full object-cover m-auto" />
+            <NuxtImg :src="image" width="400" height="400" class="h-full w-full object-cover m-auto" />
           </div>
         </swiper-slide>
       </swiper-container>
     </div>
   </div>
-  <div v-if="page" class="min-w-0 min-h-0 fade-in-on-open">
-    <h1 v-if="page.showTitle && page.title" class="mb-6">{{ page.title }}</h1>
+  <div v-if="page" class="min-w-0 min-h-0 fade-in-on-open my-auto">
+    <h3 v-if="page.showTitle && page.title" class="mb-6 text-right text-gray-600">{{ page.title }}</h3>
     <div v-if="bannerImages?.length" class="min-w-0 min-h-0 mb-8">
       <swiper-container v-if="bannerImages?.length" loop="true" effect="fade" autoplay-delay="2500"
         autoplay-disable-on-interaction="false">
         <swiper-slide v-for="image in bannerImages" :key="page.path + image" class="bg-white">
           <div class="aspect-[3/2] rounded overflow-hidden">
-            <NuxtImg :src="image" class="w-full h-full object-cover m-auto" />
+            <NuxtImg :src="image" class="w-full h-full object-cover m-auto" loading="lazy" />
           </div>
         </swiper-slide>
       </swiper-container>
     </div>
     <div v-if="galleryImages?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
       <div v-for="(image, index) in galleryImages" :key="image" class="aspect-square hover-opacity">
-        <NuxtImg @click="() => { initialSlide = index; popup = true }" :src="image"
+        <NuxtImg @click="() => { initialSlide = index; popup = true }" :src="image" loading="lazy" width="400" height="400"
           class="rounded w-full h-full object-cover cursor-pointer" />
       </div>
     </div>
@@ -93,10 +94,11 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
       <template v-for="nav in currentNav">
         <NuxtLink :to="nav.path">
           <div class="aspect-square relative hover-opacity">
-            <NuxtImg v-if="nav.banner" :src="nav.banner[0]" class="w-full h-full object-cover rounded mb-6" />
-            <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6" />
+            <NuxtImg v-if="nav.banner" :src="nav.banner[0]" class="w-full h-full object-cover rounded mb-6" loading="lazy" width="400" height="400" />
+            <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6" loading="lazy" width="400" height="400" />
             <div v-else class="w-full h-full bg-gray-200 rounded mb-6"></div>
-            <div class="opacity-0 hover-opacity bg-white flex justify-center items-center absolute top-0 left-0 w-full h-full">
+            <div
+              class="opacity-0 hover-opacity bg-white flex justify-center items-center absolute top-0 left-0 w-full h-full">
               <span class="text-center p-4 font-bold">{{ nav.title }}</span>
             </div>
           </div>

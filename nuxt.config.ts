@@ -10,6 +10,16 @@ export const contentDir = () => {
 }
 
 export default defineNuxtConfig({
+  content: {
+    build: {
+      pathMeta: {},
+      markdown: {
+        remarkPlugins: {
+          'remark-breaks': {}
+        }
+      }
+    }
+  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => tag.startsWith('swiper-')
@@ -20,8 +30,7 @@ export default defineNuxtConfig({
   experimental: { appManifest: false },
   modules: ['@nuxtjs/tailwindcss', '@nuxt/content', '@nuxt/image'],
   image: {
-    format: ['webp'],
-    quality: 80
+    quality: 75
   },
   ssr: false,
   hooks: {

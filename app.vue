@@ -13,6 +13,8 @@ const route = useRoute()
 
 watch(() => route.path, () => {
   isMenuOpen.value = false
+  document.body.style.overflow = 'auto'
+  window.scrollTo(0, 0)
 })
 </script>
 
@@ -31,8 +33,8 @@ watch(() => route.path, () => {
         <i class="bi bi-list"></i>
       </div>
       <div v-if="isMenuOpen" class="fixed top-0 left-0 w-full bg-white p-4 shadow-md fade-in-on-open">
-        <div @click="isMenuOpen = false" class="ms-auto text-[2rem] bg-white text-right">
-          <i class="bi bi-x"></i>
+        <div @click="isMenuOpen = false" class="ms-auto bg-white text-right">
+          <i class="text-gray-800 text-[2.5rem] bi bi-x"></i>
         </div>
         <div class="flex flex-col items-center text-center">
           <h1 class="mb-2">{{ info.name }}</h1>
@@ -88,7 +90,7 @@ watch(() => route.path, () => {
           <NavChild v-for="nav in navContents" :key="nav.path" :nav="nav" />
         </div>
       </div>
-      <div class="min-w-0 min-h-0">
+      <div class="min-w-0 min-h-[70vh] max-md:flex">
         <NuxtPage :info="info" :navContents="navContents" />
       </div>
     </div>
