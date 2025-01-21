@@ -1,4 +1,5 @@
 <script setup>
+import '@/assets/css/custom.css'
 import info from '@/public/info.json'
 import { useWindowSize } from '@vueuse/core'
 const { data: navContents } = await useAsyncData('navContents', () => {
@@ -42,15 +43,15 @@ watch(() => route.path, () => {
           <div class="mb-2"><a :href="`mailto:${info.email}`">{{ info.email }}</a></div>
           <div class="mb-3"><a :href="`tel:${info.phone}`">{{ info.phone }}</a></div>
           <div class="flex flex-wrap gap-2 text-2xl">
-            <a v-if="info.instagram" :href="info.instagram" target="_blank" class="text-gray-600 font-bold">
+            <a v-if="info.instagram" :href="info.instagram" target="_blank" class="text-gray-600 font-semibold">
               <i class="bi bi-instagram"></i></a>
-            <a v-if="info.facebook" :href="info.facebook" target="_blank" class="text-gray-600 font-bold">
+            <a v-if="info.facebook" :href="info.facebook" target="_blank" class="text-gray-600 font-semibold">
               <i class="bi bi-facebook"></i></a>
-            <a v-if="info.twitter" :href="info.twitter" target="_blank" class="text-gray-600 font-bold">
+            <a v-if="info.twitter" :href="info.twitter" target="_blank" class="text-gray-600 font-semibold">
               <i class="bi bi-twitter-x"></i></a>
-            <a v-if="info.linkedin" :href="info.linkedin" target="_blank" class="text-gray-600 font-bold">
+            <a v-if="info.linkedin" :href="info.linkedin" target="_blank" class="text-gray-600 font-semibold">
               <i class="bi bi-linkedin"></i></a>
-            <a v-if="info.github" :href="info.github" target="_blank" class="text-gray-600 font-bold">
+            <a v-if="info.github" :href="info.github" target="_blank" class="text-gray-600 font-semibold">
               <i class="bi bi-github"></i></a>
           </div>
         </div>
@@ -68,19 +69,19 @@ watch(() => route.path, () => {
           </a>
           <div>
             <h1 class="mb-1">{{ info.name }}</h1>
-            <div class="mb-1">{{ info.slogan }}</div>
+            <div class="mb-1 text-sm">{{ info.slogan }}</div>
             <div class="mb-1"><a :href="`mailto:${info.email}`">{{ info.email }}</a></div>
             <div class="mb-3"><a :href="`tel:${info.phone}`">{{ info.phone }}</a></div>
             <div class="flex flex-wrap gap-2 text-2xl">
-              <a v-if="info.instagram" :href="info.instagram" target="_blank" class="text-gray-600 font-bold">
+              <a v-if="info.instagram" :href="info.instagram" target="_blank" class="text-gray-600 font-semibold">
                 <i class="bi bi-instagram"></i></a>
-              <a v-if="info.facebook" :href="info.facebook" target="_blank" class="text-gray-600 font-bold">
+              <a v-if="info.facebook" :href="info.facebook" target="_blank" class="text-gray-600 font-semibold">
                 <i class="bi bi-facebook"></i></a>
-              <a v-if="info.twitter" :href="info.twitter" target="_blank" class="text-gray-600 font-bold">
+              <a v-if="info.twitter" :href="info.twitter" target="_blank" class="text-gray-600 font-semibold">
                 <i class="bi bi-twitter-x"></i></a>
-              <a v-if="info.linkedin" :href="info.linkedin" target="_blank" class="text-gray-600 font-bold">
+              <a v-if="info.linkedin" :href="info.linkedin" target="_blank" class="text-gray-600 font-semibold">
                 <i class="bi bi-linkedin"></i></a>
-              <a v-if="info.github" :href="info.github" target="_blank" class="text-gray-600 font-bold">
+              <a v-if="info.github" :href="info.github" target="_blank" class="text-gray-600 font-semibold">
                 <i class="bi bi-github"></i></a>
             </div>
           </div>

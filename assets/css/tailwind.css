@@ -11,7 +11,10 @@
     @apply text-xl;
   }
   p:not(:last-child) {
-    @apply mb-3;
+    @apply mb-3;  
+    a[href] {
+      @apply text-slate-600 hover:underline;
+    }
   }
   hr {
     @apply my-4;
@@ -19,6 +22,10 @@
   img {
     @apply select-none;
     -webkit-user-drag: none;
+  }
+  li {
+    list-style-type: auto;
+    list-style-position: inside;
   }
 }
 

@@ -63,7 +63,7 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
         class="gallery-thumbs w-full h-[10%]">
         <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white" style="width: auto;">
           <div class="flex justify-center items-center h-full aspect-square cursor-pointer">
-            <NuxtImg :src="image" width="400" height="400" class="h-full w-full object-cover m-auto" />
+            <NuxtImg :src="image" width="360" height="360" class="h-full w-full object-cover m-auto" />
           </div>
         </swiper-slide>
       </swiper-container>
@@ -83,8 +83,8 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
     </div>
     <div v-if="galleryImages?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
       <div v-for="(image, index) in galleryImages" :key="image" class="aspect-square hover-opacity">
-        <NuxtImg @click="() => { initialSlide = index; popup = true }" :src="image" loading="lazy" width="400" height="400"
-          class="rounded w-full h-full object-cover cursor-pointer" />
+        <NuxtImg @click="() => { initialSlide = index; popup = true }" :src="image" loading="lazy" width="360"
+          height="360" class="rounded w-full h-full object-cover cursor-pointer" />
       </div>
     </div>
     <ContentRenderer :value="page" />
@@ -94,12 +94,14 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
       <template v-for="nav in currentNav">
         <NuxtLink :to="nav.path">
           <div class="aspect-square relative hover-opacity">
-            <NuxtImg v-if="nav.banner" :src="nav.banner[0]" class="w-full h-full object-cover rounded mb-6" loading="lazy" width="400" height="400" />
-            <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6" loading="lazy" width="400" height="400" />
+            <NuxtImg v-if="nav.banner" :src="nav.banner[0]" class="w-full h-full object-cover rounded mb-6"
+              loading="lazy" width="360" height="360" />
+            <NuxtImg v-else-if="nav.gallery" :src="nav.gallery[0]" class="w-full h-full object-cover rounded mb-6"
+              loading="lazy" width="360" height="360" />
             <div v-else class="w-full h-full bg-gray-200 rounded mb-6"></div>
             <div
               class="opacity-0 hover-opacity bg-white flex justify-center items-center absolute top-0 left-0 w-full h-full">
-              <span class="text-center p-4 font-bold">{{ nav.title }}</span>
+              <span class="text-center p-4 font-semibold">{{ nav.title }}</span>
             </div>
           </div>
         </NuxtLink>
