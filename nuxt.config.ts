@@ -1,7 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { readdirSync, statSync, writeFileSync, readFileSync, existsSync } from 'fs'
-import { join, relative, resolve } from 'path'
+import { readdirSync, statSync, writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs'
+import { join, relative, resolve, dirname, extname } from 'path'
 import yaml from 'yaml'
+import sharp from 'sharp'
 
 export const contentDir = () => {
   const contentPath = resolve(__dirname, 'content')
@@ -29,25 +30,63 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   experimental: { appManifest: false },
   modules: ['@nuxtjs/tailwindcss', '@nuxt/content', '@nuxt/image'],
-  image: {
-    quality: 75
-  },
   ssr: false,
   hooks: {
-    'build:before': () => {
-      // Handle images list
+    'build:before': async () => {
       const publicImgPath = join(process.cwd(), 'public')
-      function getAllFiles(dir: string): string[] {
-        const files = readdirSync(dir)
-        return files.flatMap(file => {
-          const fullPath = join(dir, file)
-          return statSync(fullPath).isDirectory()
-            ? getAllFiles(fullPath)
-            : '/' + relative(publicImgPath, fullPath).replace(/\\/g, '/')
-        })
+      const thumbnailsDir = join(publicImgPath, 'thumbnails')
+
+      // Create thumbnails directory if it doesn't exist
+      if (!existsSync(thumbnailsDir)) {
+        mkdirSync(thumbnailsDir, { recursive: true })
       }
 
-      const imageList = getAllFiles(publicImgPath)
+      // Modified getAllFiles function to process images
+      async function getAllFiles(dir: string): Promise<string[]> {
+        const files = readdirSync(dir)
+        const allFiles: string[] = []
+
+        for (const file of files) {
+          const fullPath = join(dir, file)
+          
+          if (statSync(fullPath).isDirectory()) {
+            if (file !== 'thumbnails') { // Skip thumbnails directory
+              allFiles.push(...await getAllFiles(fullPath))
+            }
+          } else {
+            const ext = extname(file).toLowerCase()
+            if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
+              const relativePath = '/' + relative(publicImgPath, fullPath).replace(/\\/g, '/')
+              allFiles.push(relativePath)
+
+              // Create thumbnail with same relative path structure
+              const relativeDir = relative(publicImgPath, dir)
+              const thumbnailDir = join(thumbnailsDir, relativeDir)
+              const thumbnailPath = join(thumbnailDir, file)
+
+              // Create directory structure if it doesn't exist
+              if (!existsSync(thumbnailDir)) {
+                mkdirSync(thumbnailDir, { recursive: true })
+              }
+
+              try {
+                await sharp(fullPath)
+                  .resize(360, 360, {
+                    fit: 'cover',
+                    position: 'center'
+                  })
+                  .toFile(thumbnailPath)
+              } catch (error) {
+                console.error(`Error creating thumbnail for ${file}:`, error)
+              }
+            }
+          }
+        }
+        return allFiles
+      }
+
+      // Get all images and create thumbnails
+      const imageList = await getAllFiles(publicImgPath)
 
       // Write images to JSON file
       const jsonPath = join(publicImgPath, 'images.json')

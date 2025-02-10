@@ -28,7 +28,7 @@ watch(() => route.path, () => {
   <div class="container mx-auto max-w-full-lg">
     <div v-if="windowSize.width < 768" class="sticky top-0 left-0 w-full z-50 flex p-4 bg-white">
       <a href="/">
-        <NuxtImg :src="info.avatar" class="rounded w-40" />
+        <img :src="info.avatar" class="rounded w-40" />
       </a>
       <div @click="openMenu()" class="ms-auto text-[2rem] bg-white">
         <i class="bi bi-list"></i>
@@ -65,7 +65,7 @@ watch(() => route.path, () => {
       <div v-if="windowSize.width >= 768" class="sticky top-10">
         <div class="flex flex-col gap-4">
           <a href="/">
-            <NuxtImg :src="info.avatar" class="rounded w-48" />
+            <img :src="info.avatar" class="rounded w-48" />
           </a>
           <div>
             <h1 class="mb-1">{{ info.name }}</h1>
