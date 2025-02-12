@@ -72,8 +72,8 @@ export default defineNuxtConfig({
               try {
                 await sharp(fullPath)
                   .resize(360, 360, {
-                    fit: 'cover',
-                    position: 'center'
+                    fit: 'outside',
+                    withoutEnlargement: true
                   })
                   .toFile(thumbnailPath)
               } catch (error) {
@@ -86,6 +86,8 @@ export default defineNuxtConfig({
       }
 
       // Get all images and create thumbnails
+      
+      console.log("Generating thumbnails...")
       const imageList = await getAllFiles(publicImgPath)
 
       // Write images to JSON file

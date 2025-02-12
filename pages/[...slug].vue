@@ -55,7 +55,7 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
         class="gallery-swiper w-full h-[80%] my-auto">
         <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white">
           <div class="flex justify-center items-center h-full w-full">
-            <img :src="image" class="h-full w-full object-contain m-auto" />
+            <img :src="'/thumbnails'+image" :srcset="image + ' 400w'" class="h-full w-full object-contain m-auto" loading="lazy"/>
           </div>
         </swiper-slide>
       </swiper-container>
@@ -63,7 +63,7 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
         class="gallery-thumbs w-full h-[10%]">
         <swiper-slide v-for="image in galleryImages" :key="image" class="bg-white" style="width: auto;">
           <div class="flex justify-center items-center h-full aspect-square cursor-pointer">
-            <img :src="'/thumbnails'+image" class="h-full w-full object-cover m-auto" />
+            <img :src="'/thumbnails'+image" class="h-full w-full object-cover m-auto" loading="lazy" />
           </div>
         </swiper-slide>
       </swiper-container>
@@ -76,14 +76,14 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
         autoplay-disable-on-interaction="false">
         <swiper-slide v-for="image in bannerImages" :key="page.path + image" class="bg-white">
           <div class="aspect-[3/2] rounded overflow-hidden">
-            <img :src="image" class="w-full h-full object-cover m-auto" loading="lazy" />
+            <img :src="'/thumbnails'+image" :srcset="image + ' 400w'" class="w-full h-full object-cover m-auto" loading="lazy" />
           </div>
         </swiper-slide>
       </swiper-container>
     </div>
     <div v-if="galleryImages?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
       <div v-for="(image, index) in galleryImages" :key="image" class="aspect-square hover-opacity">
-        <img @click="() => { initialSlide = index; popup = true }" :src="'/thumbnails'+image" loading="lazy" class="rounded w-full h-full object-cover cursor-pointer" />
+        <img @click="() => { initialSlide = index; popup = true }" :src="'/thumbnails'+image" class="rounded w-full h-full object-cover cursor-pointer" loading="lazy" />
       </div>
     </div>
     <ContentRenderer :value="page" />
