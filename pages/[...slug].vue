@@ -88,7 +88,7 @@ const { data: currentNav } = await useAsyncData('currentNav', () => {
     </div>
     <ContentRenderer :value="page" />
   </div>
-  <div v-else-if="currentNav.length" class="fade-in-on-open">
+  <div v-else-if="currentNav?.length" class="fade-in-on-open">
     <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
       <template v-for="nav in currentNav">
         <NuxtLink :to="nav.path">
