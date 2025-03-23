@@ -1,7 +1,6 @@
 <script setup>
 import '@/assets/css/custom.css'
 import info from '@/public/info.json'
-import { useWindowSize } from '@vueuse/core'
 const { data: navContents } = await useAsyncData('navContents', () => {
   return queryCollectionNavigation('content')
 })
@@ -9,7 +8,6 @@ const isMenuOpen = ref(false)
 const openMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
-const { data: windowSize } = useAsyncData('windowSize', () => useWindowSize())
 const route = useRoute()
 
 watch(() => route.path, () => {
@@ -26,7 +24,7 @@ watch(() => route.path, () => {
     <Meta name="description" :content="info.description" />
   </Head>
   <div class="container mx-auto max-w-full-lg">
-    <div v-if="windowSize.width < 768" class="sticky top-0 left-0 w-full z-50 flex p-4 bg-white">
+    <div class="sticky md:hidden top-0 left-0 w-full z-50 flex p-4 bg-white">
       <a href="/">
         <img :src="info.avatar" class="rounded w-40" />
       </a>
@@ -62,7 +60,7 @@ watch(() => route.path, () => {
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-[30%_1fr] gap-12 py-8 px-5">
-      <div v-if="windowSize.width >= 768" class="sticky top-10">
+      <div class="sticky max-md:hidden top-10">
         <div class="flex flex-col gap-4">
           <a href="/">
             <img :src="info.avatar" class="rounded w-48" />
