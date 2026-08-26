@@ -1,29 +1,25 @@
 {
-  "name": "nuxt-app",
+  "name": "hsiaoling-portfoto",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "prepare-images": "UV_THREADPOOL_SIZE=16 node scripts/prepare-images.mjs",
+    "dev": "npm run prepare-images && astro dev",
+    "build": "npm run prepare-images && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "@nuxt/content": "^3.11.0",
-    "@tailwindcss/postcss": "^4.1.12",
-    "better-sqlite3": "^12.2.0",
-    "nuxt": "^4.3.0",
+    "@astrojs/markdown-remark": "^7.2.4",
+    "@iconify-json/bi": "^1.2.2",
+    "@iconify-json/mdi": "^1.2.2",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.7",
+    "astro-icon": "^1.2.0",
     "remark-breaks": "^4.0.0",
-    "sharp": "^0.33.5",
-    "swiper": "^12.1.0",
-    "tailwindcss": "^4.1.12",
-    "vue": "latest",
-    "vue-router": "latest"
-  },
-  "devDependencies": {
-    "@iconify/vue": "^5.0.0",
-    "postcss": "^8.5.6",
-    "postcss-nested": "^7.0.2"
+    "sharp": "^0.35.3",
+    "swiper": "^14.1.0",
+    "tailwindcss": "^4.3.3",
+    "yaml": "^2.9.0"
   }
 }

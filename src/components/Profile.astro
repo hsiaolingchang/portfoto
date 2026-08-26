@@ -1,0 +1,42 @@
+---
+import { Icon } from 'astro-icon/components'
+import Avatar from './Avatar.astro'
+import { info } from '../lib/site'
+
+interface Props {
+  /** Renders the avatar above the details when given. */
+  avatarClass?: string
+  center?: boolean
+}
+
+const { avatarClass, center = false } = Astro.props
+
+const socials = [
+  ['instagram', 'mdi:instagram'],
+  ['facebook', 'mdi:facebook'],
+  ['twitter', 'mdi:twitter-x'],
+  ['linkedin', 'mdi:linkedin'],
+  ['github', 'mdi:github']
+] as const
+---
+
+<div class:list={['flex flex-col gap-4', { 'items-center text-center': center }]}>
+  {avatarClass && <Avatar class={avatarClass} />}
+  <div>
+    <h1 class="mb-1">{info.name}</h1>
+    {info.slogan && <div class="mb-1 text-sm">{info.slogan}</div>}
+    {info.email && <div class="mb-1"><a href={`mailto:${info.email}`}>{info.email}</a></div>}
+    {info.phone && <div class="mb-3"><a href={`tel:${info.phone}`}>{info.phone}</a></div>}
+    <div class:list={['flex flex-wrap gap-2 text-2xl', { 'justify-center': center }]}>
+      {
+        socials.map(([key, icon]) =>
+          info[key] ? (
+            <a href={info[key]} target="_blank" class="text-gray-600 font-semibold">
+              <Icon name={icon} />
+            </a>
+          ) : null
+        )
+      }
+    </div>
+  </div>
+</div>

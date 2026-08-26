@@ -1,0 +1,254 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { getCollection, render, type CollectionEntry } from 'astro:content'
+import { Icon } from 'astro-icon/components'
+import Layout from '../layouts/Layout.astro'
+import ResizedImg from '../components/ResizedImg.astro'
+import { buildNavigation, idToPath, listingFolders, parseImageList, pathToParam } from '../lib/site'
+
+type Child = { path: string; title?: string; cover?: string }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const entries = await getCollection('content')
+
+  const byTrailingSegment = (a: string, b: string) => {
+    const aLast = a.split('/').pop() ?? ''
+    const bLast = b.split('/').pop() ?? ''
+    const aNum = Number(aLast)
+    const bNum = Number(bLast)
+    if (!isNaN(aNum) && !isNaN(bNum)) return bNum - aNum
+    return bLast.localeCompare(aLast)
+  }
+
+  const pages = entries.map((entry) => ({
+    params: { slug: pathToParam(idToPath(entry.id)) },
+    props: { entry }
+  }))
+
+  // Folders without their own index.md get a page listing every entry below them,
+  // newest (highest numbered) first.
+  const folders = listingFolders(buildNavigation(entries)).map((folder) => ({
+    params: { slug: pathToParam(folder.path) },
+    props: {
+      children: entries
+        .map((entry) => ({ entry, path: idToPath(entry.id) }))
+        .filter(({ path }) => path.startsWith(folder.path))
+        .sort((a, b) => byTrailingSegment(a.entry.id, b.entry.id))
+        .map(({ entry, path }): Child => ({
+          path,
+          title: entry.data.title,
+          cover: parseImageList(entry.data.banner ?? entry.data.gallery)[0]
+        }))
+    }
+  }))
+
+  return [...pages, ...folders]
+}
+
+interface Props {
+  entry?: CollectionEntry<'content'>
+  children?: Child[]
+}
+
+const { entry, children = [] } = Astro.props
+
+const galleryImages = parseImageList(entry?.data.gallery)
+const bannerImages = parseImageList(entry?.data.banner)
+const Content = entry ? (await render(entry)).Content : null
+---
+
+<Layout title={entry?.data.title}>
+  <div class="min-w-0 min-h-0">
+    {
+      galleryImages.length > 0 && (
+        <div class="popup-container" data-popup>
+          <button
+            type="button"
+            data-popup-close
+            aria-label="Close"
+            class="absolute top-3 right-3 cursor-pointer z-10 text-gray-600"
+          >
+            <Icon name="mdi:window-close" width="30" height="30" />
+          </button>
+          <div class="min-w-0 min-h-0 h-full w-full flex flex-col bg-white p-2">
+            <swiper-container
+              data-popup-swiper
+              init="false"
+              class="gallery-swiper w-full h-[80%] my-auto"
+            >
+              {galleryImages.map((image) => (
+                <swiper-slide class="bg-white">
+                  <div class="flex justify-center items-center h-full w-full">
+                    <ResizedImg src={image} size="large" class="h-full w-full object-contain m-auto" loading="lazy" />
+                  </div>
+                </swiper-slide>
+              ))}
+            </swiper-container>
+            <swiper-container data-popup-thumbs init="false" class="gallery-thumbs w-full h-[10%]">
+              {galleryImages.map((image) => (
+                <swiper-slide class="bg-white" style="width: auto;">
+                  <div class="flex justify-center items-center h-full aspect-square cursor-pointer">
+                    <ResizedImg src={image} size="small" class="h-full w-full object-cover m-auto" loading="lazy" />
+                  </div>
+                </swiper-slide>
+              ))}
+            </swiper-container>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      entry ? (
+        <div class="min-w-0 min-h-0 my-auto">
+          {entry.data.showTitle && entry.data.title && (
+            <h3 class="mb-6 text-right text-gray-600">{entry.data.title}</h3>
+          )}
+
+          {bannerImages.length > 0 && (
+            <div class="min-w-0 min-h-0 mb-8">
+              <swiper-container
+                loop="true"
+                effect="fade"
+                autoplay-delay="2500"
+                autoplay-disable-on-interaction="false"
+              >
+                {bannerImages.map((image) => (
+                  <swiper-slide class="bg-white">
+                    <div class="aspect-[3/2] rounded overflow-hidden">
+                      <ResizedImg src={image} size="large" class="w-full h-full object-cover m-auto" loading="lazy" />
+                    </div>
+                  </swiper-slide>
+                ))}
+              </swiper-container>
+            </div>
+          )}
+
+          {galleryImages.length > 0 && (
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              {galleryImages.map((image, index) => (
+                <div class="aspect-square hover-opacity">
+                  <ResizedImg
+                    src={image}
+                    size="small"
+                    data-gallery-index={index}
+                    class="rounded w-full h-full object-cover cursor-pointer"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <Content />
+        </div>
+      ) : (
+        children.length > 0 && (
+          <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            {children.map((child) => (
+              <a href={child.path}>
+                <div class="aspect-square relative hover-opacity">
+                  {child.cover ? (
+                    <ResizedImg
+                      src={child.cover}
+                      size="small"
+                      class="w-full h-full object-cover rounded mb-6"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gray-200 rounded mb-6" />
+                  )}
+                  <div class="opacity-0 hover-opacity bg-white flex justify-center items-center absolute top-0 left-0 w-full h-full">
+                    <span class="text-center p-4 font-semibold">{child.title}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )
+      )
+    }
+  </div>
+</Layout>
+
+<script>
+  // Only the pages that actually show a carousel pay for the swiper bundle.
+  if (document.querySelector('swiper-container')) {
+    const { register } = await import('swiper/element/bundle')
+    register()
+  }
+
+  const popup = document.querySelector<HTMLElement>('[data-popup]')
+  const mainSwiper = popup?.querySelector<HTMLElement>('[data-popup-swiper]')
+  const thumbsSwiper = popup?.querySelector<HTMLElement>('[data-popup-thumbs]')
+
+  if (popup && mainSwiper && thumbsSwiper) {
+    // Deferred until the popup is first shown: the slides are hidden until then,
+    // so their full-size images are never fetched on a plain page view.
+    let initialized = false
+    const initialize = () => {
+      Object.assign(thumbsSwiper, {
+        slidesPerView: 'auto',
+        spaceBetween: 10,
+        watchSlidesProgress: true
+      })
+      // @ts-expect-error - swiper element API
+      thumbsSwiper.initialize()
+
+      Object.assign(mainSwiper, {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        effect: 'fade',
+        fadeEffect: { crossFade: true },
+        navigation: true,
+        thumbs: { swiper: thumbsSwiper }
+      })
+      // @ts-expect-error - swiper element API
+      mainSwiper.initialize()
+      initialized = true
+    }
+
+    const isOpen = () => popup.classList.contains('open')
+
+    const setOpen = (open: boolean) => {
+      popup.classList.toggle('open', open)
+      document.body.style.overflow = open ? 'hidden' : 'auto'
+      if (open && !initialized) initialize()
+    }
+
+    const show = (index: number) => {
+      setOpen(true)
+      // @ts-expect-error - swiper element API
+      mainSwiper.swiper.slideToLoop(index, 0)
+    }
+
+    mainSwiper.addEventListener('swiperslidechange', (event) => {
+      const [swiper] = (event as CustomEvent).detail
+      if (isOpen()) history.replaceState({}, '', `?show=${swiper.realIndex}`)
+    })
+
+    document.querySelectorAll<HTMLElement>('[data-gallery-index]').forEach((image) => {
+      image.addEventListener('click', () => {
+        const index = Number(image.dataset.galleryIndex)
+        show(index)
+        history.pushState({}, '', '?')
+        history.pushState({}, '', `?show=${index}`)
+      })
+    })
+
+    document.querySelector('[data-popup-close]')?.addEventListener('click', () => {
+      setOpen(false)
+      history.replaceState({}, '', '?')
+    })
+
+    const syncFromUrl = () => {
+      const showParam = new URLSearchParams(location.search).get("show")
+      if (showParam !== null && showParam !== "" && !isNaN(Number(showParam))) show(Number(showParam))
+      else setOpen(false)
+    }
+
+    window.addEventListener('popstate', syncFromUrl)
+    syncFromUrl()
+  }
+</script>

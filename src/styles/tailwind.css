@@ -1,3 +1,4 @@
+@import "./custom.css";
 @import "tailwindcss";
 
 @layer base {
@@ -8,7 +9,7 @@
     @apply text-xl;
   }
   p:not(:last-child) {
-    @apply mb-3;  
+    @apply mb-3;
     a[href] {
       @apply text-slate-600 hover:underline;
     }
@@ -33,9 +34,24 @@
   }
 }
 
+/* Kept out of the layout until opened, so its full-size images aren't fetched. */
 .popup-container {
   @apply fixed top-0 left-0 w-full h-full p-2 z-50 bg-[#000A];
-  transition: opacity 0.2s ease-in-out;
+  display: none;
+}
+
+.popup-container.open {
+  display: block;
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .collapse-children {
@@ -48,37 +64,39 @@
   max-height: 100vh;
 }
 
-.swiper {
-  --swiper-theme-color: theme('colors.gray.400');
+swiper-container {
+  --swiper-theme-color: var(--color-gray-400);
   --swiper-navigation-sides-offset: 0;
   --swiper-navigation-size: 2rem;
-  &::part(button-prev), &::part(button-next) {
-    padding: .25rem;
-    background-color: #AAAA;
+  &::part(button-prev),
+  &::part(button-next) {
+    padding: 0.25rem;
+    background-color: #aaaa;
   }
-  @media (max-width: theme('screens.md')) {
+  @media (width < 48rem) {
     --swiper-navigation-top-offset: 90%;
     --swiper-navigation-sides-offset: 30%;
   }
-  .swiper-slide {
-    backface-visibility: hidden; 
-    -webkit-backface-visibility: hidden; 
+  swiper-slide {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 }
 
 .gallery-thumbs {
-  .swiper-slide img {
+  swiper-slide img {
     @apply rounded-md;
     transition: border 0.1s ease-in-out;
   }
-  .swiper-slide-thumb-active img {
+  swiper-slide.swiper-slide-thumb-active img {
     @apply border-4 border-gray-300;
   }
 }
 
-@keyframes fadeIn {
+/* Page enter animation, replaces the Nuxt page transition. */
+@keyframes fade-down {
   from {
-    opacity: 0.1;
+    opacity: 0;
     transform: translateY(-10px);
   }
   to {
@@ -87,28 +105,16 @@
   }
 }
 
-.fade-down-enter-active,
-.fade-down-leave-active,
-.fade-up-enter-active,
-.fade-up-leave-active,
-.fade-enter-active,
-.fade-leave-active {
+.fade-down {
+  animation: fade-down 0.3s ease;
+}
+
+.mobile-menu {
   transition: opacity 0.2s ease, transform 0.3s ease;
 }
 
-.fade-down-enter-from,
-.fade-down-leave-to {
+.mobile-menu[aria-hidden='true'] {
   opacity: 0;
   transform: translateY(-10px);
-}
-
-.fade-up-enter-from,
-.fade-up-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+  pointer-events: none;
 }

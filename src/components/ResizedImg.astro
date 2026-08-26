@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { resizedSrc } from '../lib/site'
+
+interface Props extends Omit<HTMLAttributes<'img'>, 'src'> {
+  src: string
+  size: 'small' | 'large'
+}
+
+const { src, size, ...attrs } = Astro.props
+---
+
+<img src={resizedSrc(src, size)} {...attrs} />

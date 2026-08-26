@@ -1,0 +1,81 @@
+---
+import { Icon } from 'astro-icon/components'
+import Avatar from '../components/Avatar.astro'
+import NavChild from '../components/NavChild.astro'
+import Profile from '../components/Profile.astro'
+import { getCollection } from 'astro:content'
+import { buildNavigation, info } from '../lib/site'
+import '../styles/tailwind.css'
+
+interface Props {
+  title?: string
+}
+
+const { title } = Astro.props
+const currentPath = Astro.url.pathname
+const navigation = buildNavigation(await getCollection('content'))
+---
+
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title ? `${title} - ${info.title}` : info.title}</title>
+    <meta name="description" content={info.description ?? info.title} />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <main>
+      <div class="container mx-auto">
+        <div class="sticky md:hidden top-0 left-0 w-full z-50 flex p-4 bg-white">
+          <Avatar class="rounded w-40" />
+          <button
+            type="button"
+            data-menu-open
+            aria-label="Open menu"
+            class="ms-auto text-[2rem] bg-white text-gray-600"
+          >
+            <Icon name="mdi:menu" width="32" height="32" />
+          </button>
+          <div
+            data-menu
+            aria-hidden="true"
+            class="mobile-menu fixed top-0 left-0 w-full bg-white p-4 shadow-md"
+          >
+            <button type="button" data-menu-close aria-label="Close menu" class="text-gray-600 flex w-full">
+              <Icon name="mdi:window-close" width="32" height="32" class="ms-auto" />
+            </button>
+            <Profile center />
+            <hr />
+            <div class="flex flex-col gap-1 text-lg">
+              {navigation.map((nav) => <NavChild nav={nav} currentPath={currentPath} />)}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[30%_1fr] gap-12 py-8 px-5">
+          <div class="sticky max-md:hidden top-10">
+            <Profile avatarClass="rounded w-48" />
+            <hr />
+            <div class="flex flex-col gap-1">
+              {navigation.map((nav) => <NavChild nav={nav} currentPath={currentPath} />)}
+            </div>
+          </div>
+          <div class="min-w-0 min-h-[70vh] max-md:flex fade-down">
+            <slot />
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const menu = document.querySelector<HTMLElement>('[data-menu]')
+      const setMenu = (open: boolean) => {
+        menu?.setAttribute('aria-hidden', String(!open))
+        document.body.style.overflow = open ? 'hidden' : 'auto'
+      }
+      document.querySelector('[data-menu-open]')?.addEventListener('click', () => setMenu(true))
+      document.querySelector('[data-menu-close]')?.addEventListener('click', () => setMenu(false))
+    </script>
+  </body>
+</html>

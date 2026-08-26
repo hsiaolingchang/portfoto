@@ -1,75 +1,28 @@
-# Nuxt Minimal Starter
+# 足水日攝影工作室 Portfolio
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+以 [Astro](https://astro.build/) + [Tailwind CSS](https://tailwindcss.com/) 建置的靜態攝影作品集。
 
-## Setup
+## 內容
 
-Make sure to install dependencies:
+- 文章放在 `content/`（不存在時會 fallback 到 `content.example/`）。
+- 目錄與檔名的數字前綴決定排序，並在網址中被移除：
+  `content/1.work/2.Portrait/3.md` → `/work/portrait/3/`。
+- 沒有 `index.md` 的資料夾會自動產生一頁列表。
+- frontmatter：`title`、`showTitle`、`banner`、`gallery`。
+  `banner` / `gallery` 中以 `/` 結尾的項目，會展開成該資料夾內的所有圖片。
+- 站台資訊（標題、頭像、聯絡方式、社群連結）放在 `content/info.yml`。
+
+## 圖片
+
+原圖放在 `public/`，`npm run prepare-images` 會用 sharp 產生
+`public/resized/{small,large}/…webp`（已存在的會跳過），頁面只引用縮圖。
+`npm run dev` 與 `npm run build` 都會先跑這一步。
+
+## 指令
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
+npm run dev      # http://localhost:4321
+npm run build    # 輸出到 dist/
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

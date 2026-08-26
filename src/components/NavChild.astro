@@ -1,0 +1,39 @@
+---
+import { Icon } from 'astro-icon/components'
+import type { NavNode } from '../lib/site'
+
+interface Props {
+  nav: NavNode
+  isSubNav?: boolean
+  currentPath: string
+}
+
+const { nav, isSubNav = false, currentPath } = Astro.props
+const isGroup = nav.page === false
+const isActive = currentPath.startsWith(nav.path)
+const visible = nav.title.length > 0 && (!isSubNav || isGroup)
+---
+
+{
+  visible && (
+    <div>
+      <a
+        href={nav.path}
+        class:list={[
+          'flex items-center gap-1',
+          isActive ? 'text-gray-700 font-bold' : 'text-gray-500 hover:text-gray-700'
+        ]}
+      >
+        <Icon name={isGroup ? 'bi:caret-right-fill' : 'bi:caret-right'} width="16" height="16" />
+        {nav.title}
+      </a>
+      {isGroup && (
+        <div class:list={['collapse-children flex flex-col gap-1', { open: isActive }]}>
+          {nav.children.map((child) => (
+            <Astro.self nav={child} isSubNav={true} currentPath={currentPath} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

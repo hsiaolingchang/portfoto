@@ -1,0 +1,13 @@
+---
+import { info } from '../lib/site'
+
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+---
+
+<a href="/">
+  <img src={info.avatar} class={className} alt={info.name ?? info.title} />
+</a>
