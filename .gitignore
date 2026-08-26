@@ -19,9 +19,7 @@ logs
 .env.*
 !.env.example
 
-# Content
-content/
+# Originals live outside the repo; only the generated public/resized/ ships.
 source-images/
-public/*
 
 .gstack/
