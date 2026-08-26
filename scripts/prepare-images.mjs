@@ -2,25 +2,23 @@
 import { existsSync, mkdirSync, cpSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import sharp from 'sharp'
-import { contentDir, imageSizes, listImages, publicDir, resizedDir, resizedSrc, root } from '../src/lib/paths.mjs'
+import { contentDir, imageSizes, listImages, publicDir, resizedSrc, root, sourceDir } from '../src/lib/paths.mjs'
 
-// The example content ships its own images; surface them under /example.
-if (contentDir().endsWith('content.example')) {
+// The example content ships its own images; surface them as /example sources.
+if (contentDir.endsWith('content.example')) {
   const src = join(root, 'content.example', 'public')
-  if (existsSync(src)) cpSync(src, join(publicDir, 'example'), { recursive: true })
+  if (existsSync(src)) cpSync(src, join(sourceDir, 'example'), { recursive: true })
 }
 
-mkdirSync(resizedDir, { recursive: true })
-
-const jobs = listImages().flatMap((src) =>
-  Object.entries(imageSizes).map(([size, width]) => ({
-    from: join(publicDir, src),
-    to: join(publicDir, resizedSrc(src, size)),
-    width
-  }))
-)
-
-const pending = jobs.filter((job) => !existsSync(job.to))
+const pending = listImages()
+  .flatMap((src) =>
+    Object.entries(imageSizes).map(([size, width]) => ({
+      from: join(sourceDir, src),
+      to: join(publicDir, resizedSrc(src, size)),
+      width
+    }))
+  )
+  .filter((job) => !existsSync(job.to))
 
 console.log(`Generating resized images (${pending.length} missing)...`)
 

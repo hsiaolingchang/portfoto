@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions'
 import { Icon } from 'astro-icon/components'
 import Avatar from '../components/Avatar.astro'
 import NavChild from '../components/NavChild.astro'
@@ -23,6 +24,7 @@ const navigation = buildNavigation(await getCollection('content'))
     <title>{title ? `${title} - ${info.title}` : info.title}</title>
     <meta name="description" content={info.description ?? info.title} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <ClientRouter />
   </head>
   <body>
     <main>
@@ -61,7 +63,7 @@ const navigation = buildNavigation(await getCollection('content'))
               {navigation.map((nav) => <NavChild nav={nav} currentPath={currentPath} />)}
             </div>
           </div>
-          <div class="min-w-0 min-h-[70vh] max-md:flex fade-down">
+          <div class="min-w-0 min-h-[70vh] max-md:flex">
             <slot />
           </div>
         </div>
@@ -69,13 +71,15 @@ const navigation = buildNavigation(await getCollection('content'))
     </main>
 
     <script>
-      const menu = document.querySelector<HTMLElement>('[data-menu]')
-      const setMenu = (open: boolean) => {
-        menu?.setAttribute('aria-hidden', String(!open))
-        document.body.style.overflow = open ? 'hidden' : 'auto'
-      }
-      document.querySelector('[data-menu-open]')?.addEventListener('click', () => setMenu(true))
-      document.querySelector('[data-menu-close]')?.addEventListener('click', () => setMenu(false))
+      document.addEventListener('astro:page-load', () => {
+        const menu = document.querySelector<HTMLElement>('[data-menu]')
+        const setMenu = (open: boolean) => {
+          menu?.setAttribute('aria-hidden', String(!open))
+          document.body.style.overflow = open ? 'hidden' : 'auto'
+        }
+        document.querySelector('[data-menu-open]')?.addEventListener('click', () => setMenu(true))
+        document.querySelector('[data-menu-close]')?.addEventListener('click', () => setMenu(false))
+      })
     </script>
   </body>
 </html>

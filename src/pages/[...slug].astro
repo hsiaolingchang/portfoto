@@ -71,11 +71,7 @@ const Content = entry ? (await render(entry)).Content : null
             <Icon name="mdi:window-close" width="30" height="30" />
           </button>
           <div class="min-w-0 min-h-0 h-full w-full flex flex-col bg-white p-2">
-            <swiper-container
-              data-popup-swiper
-              init="false"
-              class="gallery-swiper w-full h-[80%] my-auto"
-            >
+            <swiper-container data-popup-swiper init="false" class="w-full h-[80%] my-auto">
               {galleryImages.map((image) => (
                 <swiper-slide class="bg-white">
                   <div class="flex justify-center items-center h-full w-full">
@@ -172,17 +168,25 @@ const Content = entry ? (await render(entry)).Content : null
 </Layout>
 
 <script>
-  // Only the pages that actually show a carousel pay for the swiper bundle.
-  if (document.querySelector('swiper-container')) {
-    const { register } = await import('swiper/element/bundle')
-    register()
-  }
+  // Re-runs after every client-side navigation, so each page wires up its own popup.
+  document.addEventListener('astro:page-load', async () => {
+    // Only the pages that actually show a carousel pay for the swiper bundle,
+    // and the custom elements are only ever defined once.
+    if (document.querySelector('swiper-container') && !customElements.get('swiper-container')) {
+      const { register } = await import('swiper/element/bundle')
+      register()
+    }
 
-  const popup = document.querySelector<HTMLElement>('[data-popup]')
-  const mainSwiper = popup?.querySelector<HTMLElement>('[data-popup-swiper]')
-  const thumbsSwiper = popup?.querySelector<HTMLElement>('[data-popup-thumbs]')
+    const popup = document.querySelector<HTMLElement>('[data-popup]')
+    const mainSwiper = popup?.querySelector<HTMLElement>('[data-popup-swiper]')
+    const thumbsSwiper = popup?.querySelector<HTMLElement>('[data-popup-thumbs]')
 
-  if (popup && mainSwiper && thumbsSwiper) {
+    if (!popup || !mainSwiper || !thumbsSwiper) return
+
+    // Listeners on window outlive the swap, so drop them when the page changes.
+    const pageScope = new AbortController()
+    document.addEventListener('astro:before-swap', () => pageScope.abort(), { once: true })
+
     // Deferred until the popup is first shown: the slides are hidden until then,
     // so their full-size images are never fetched on a plain page view.
     let initialized = false
@@ -209,8 +213,6 @@ const Content = entry ? (await render(entry)).Content : null
       initialized = true
     }
 
-    const isOpen = () => popup.classList.contains('open')
-
     const setOpen = (open: boolean) => {
       popup.classList.toggle('open', open)
       document.body.style.overflow = open ? 'hidden' : 'auto'
@@ -225,7 +227,7 @@ const Content = entry ? (await render(entry)).Content : null
 
     mainSwiper.addEventListener('swiperslidechange', (event) => {
       const [swiper] = (event as CustomEvent).detail
-      if (isOpen()) history.replaceState({}, '', `?show=${swiper.realIndex}`)
+      if (popup.classList.contains('open')) history.replaceState({}, '', `?show=${swiper.realIndex}`)
     })
 
     document.querySelectorAll<HTMLElement>('[data-gallery-index]').forEach((image) => {
@@ -248,7 +250,7 @@ const Content = entry ? (await render(entry)).Content : null
       else setOpen(false)
     }
 
-    window.addEventListener('popstate', syncFromUrl)
+    window.addEventListener('popstate', syncFromUrl, { signal: pageScope.signal })
     syncFromUrl()
-  }
+  })
 </script>

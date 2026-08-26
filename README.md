@@ -14,9 +14,15 @@
 
 ## 圖片
 
-原圖放在 `public/`，`npm run prepare-images` 會用 sharp 產生
-`public/resized/{small,large}/…webp`（已存在的會跳過），頁面只引用縮圖。
-`npm run dev` 與 `npm run build` 都會先跑這一步。
+原圖放在 **`source-images/`**（不是 `public/`），`npm run prepare-images` 會用 sharp
+產生 `public/resized/{small,large}/…webp`，已存在的會跳過。`npm run dev` 與
+`npm run build` 都會先跑這一步。
+
+`source-images/` 在 `public/` 之外，所以原圖不會被部署 —— `dist/` 只帶縮圖。
+frontmatter 裡的路徑相對於 `source-images/`：`source-images/img/a/b.jpg` 寫成 `/img/a/b.jpg`。
+
+`public/` 只放真正要直接對外的檔案（`logo-1.png`、`favicon.ico`、`robots.txt`）
+和產生出來的 `resized/`。
 
 ## 指令
 

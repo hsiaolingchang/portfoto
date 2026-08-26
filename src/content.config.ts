@@ -5,7 +5,7 @@ import { contentDir, fileToId } from './lib/site'
 const content = defineCollection({
   loader: glob({
     pattern: '**/*.md',
-    base: contentDir(),
+    base: contentDir,
     generateId: ({ entry }) => fileToId(entry)
   }),
   schema: z.object({

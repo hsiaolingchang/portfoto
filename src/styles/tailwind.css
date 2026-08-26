@@ -93,22 +93,6 @@ swiper-container {
   }
 }
 
-/* Page enter animation, replaces the Nuxt page transition. */
-@keyframes fade-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-down {
-  animation: fade-down 0.3s ease;
-}
-
 .mobile-menu {
   transition: opacity 0.2s ease, transform 0.3s ease;
 }

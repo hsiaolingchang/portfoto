@@ -12,7 +12,6 @@ type Info = {
   slogan?: string
   email?: string
   phone?: string
-  logo?: string
   avatar?: string
   instagram?: string
   facebook?: string
@@ -21,7 +20,7 @@ type Info = {
   github?: string
 }
 
-export const info: Info = yaml.parse(readFileSync(join(contentDir(), 'info.yml'), 'utf8'))
+export const info: Info = yaml.parse(readFileSync(join(contentDir, 'info.yml'), 'utf8'))
 
 const imagesByFolder = new Map<string, string[]>()
 for (const image of listImages()) {
@@ -110,22 +109,22 @@ export function buildNavigation(entries: Entry[]): NavNode[] {
   const tree: MutableNode = { name: '', title: '', path: '/', page: true, children: [] }
 
   for (const entry of entries) {
-    const names = relative(contentDir(), resolve(root, entry.filePath ?? '')).split(/[\\/]/)
+    const names = relative(contentDir, resolve(root, entry.filePath ?? '')).split(/[\\/]/)
     const file = names.pop()!
     const path = idToPath(entry.id)
+    // Folder paths are this path's leading segments, so the slug rules stay in fileToId.
+    const segments = path.split('/')
 
     let parent = tree
-    let depth = 0
-    for (const name of names) {
-      // Folder paths are the entry path's leading segments, so slugs stay in fileToId.
-      const folderPath = path.split('/').slice(0, ++depth + 1).join('/') + '/'
+    names.forEach((name, depth) => {
       let node = parent.children.find((child) => child.name === name)
       if (!node) {
+        const folderPath = segments.slice(0, depth + 2).join('/') + '/'
         node = { name, title: titleize(name), path: folderPath, page: false, children: [] }
         parent.children.push(node)
       }
       parent = node
-    }
+    })
 
     // index.md is the folder's own page rather than a nav entry of its own.
     if (file === 'index.md') {
@@ -148,7 +147,5 @@ export function buildNavigation(entries: Entry[]): NavNode[] {
 
 /** Folders that have no index.md — these need a generated listing page. */
 export function listingFolders(nodes: NavNode[]): NavNode[] {
-  return nodes.flatMap((node) =>
-    node.children.length ? [...(node.page ? [] : [node]), ...listingFolders(node.children)] : []
-  )
+  return nodes.flatMap((node) => [...(node.page ? [] : [node]), ...listingFolders(node.children)])
 }
